@@ -1,14 +1,23 @@
 # SORA
-*SO*ftware *R*outer *A*cceleration using OpenFlow switch hardware
-PROOF OF CONCEPT
-Runs on hp2920 OpenFlow capable switch.
+**SO**ftware **R**outer **A**ccelerator using OpenFlow capable switch hardware
+
+PROOF OF CONCEPT - Runs on hp2920 OpenFlow capable switch.
+
+
+***Please read the WIKI for more information***
+
+Copyright (C) 2016-2017 Norbertas Kremeris, [*LITNET*](https://www.litnet.lt/en/)
+
+
+
+
 
 Further instructions on starting the proof of concept offloading
 setup can be found in the 'SORA_offloader' directory.
 
-Copyright (C) 2016-2017 Norbertas Kremeris 
 
-*Please read the WIKI for more information*
+
+
 
 
 
