@@ -1,8 +1,18 @@
 # SORA
-Software router acceleration using OpenFlow switch hardware
+*SO*ftware *R*outer *A*cceleration using OpenFlow switch hardware
+PROOF OF CONCEPT
+Runs on hp2920 OpenFlow capable switch.
+
+Further instructions on starting the proof of concept offloading
+setup can be found in the 'SORA_offloader' directory.
+
 Copyright (C) 2016-2017 Norbertas Kremeris 
 
 *Please read the WIKI for more information*
+
+
+
+
 
 
 This program is free software: you can redistribute it and/or modify
