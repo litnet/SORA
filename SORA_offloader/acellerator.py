@@ -47,13 +47,14 @@ sflowHostPort = "8008"
 ryuHostAddr = "localhost"
 ryuHostPort = "8080"
 routerAddr = "192.168.122.233"
-topPrefixCount = 200
+topPrefixCount = 300
 offloadValue = 0 #bytes per second
 cooldownPeriod = 1
 flowTimeout = 60
-loopSleepTime = 55
-tableId = 40 #default table id to use; 
-
+loopSleepTime = 20
+tableIdForDefault = 40 #table id to use for default mapping (routed ports)
+tableIdForOffload = 40 #table id to use for offload flows generated from bgp routes
+sleepAfterFlowInstall = 0.05 #sleep in seconds after every flow installed
 
 ####FUNCTIONS
 
@@ -71,6 +72,19 @@ def getId(ryuHostAddr,ryuHostPort):
 		return switchlist
 
 
+#===checks if switch is online
+def waitForSwitchOnline(ryuHostAddr, ryuHostPort):
+	counter = 0
+	print ( "\nWaiting for switch, timeout 60s" )
+	
+	while not (counter > 60 and getId(ryuHostAddr, ryuHostPort)):
+		counter += 1
+		print(".")
+		time.sleep(1)
+		print( "\nSwitch found!\n" );
+		return 1
+	print( "Timed out waiting for switch, exiting...\n")
+	return 0;
 
 
 #=== returns table of vlans vs ports
@@ -130,10 +144,8 @@ def defaultMapping(routerPortNumber,portList,vlanList):
 	switchId=getId(ryuHostAddr, ryuHostPort)
 	data = []
 	for i in range(0,len(portList)):
-		data.append(flow.toRouterPort(switchId,portList[i],routerPortNumber,vlanList[i],tableId))
-		data.append(flow.fromRouterPort(switchId,portList[i],routerPortNumber,vlanList[i],tableId))
-#		data.append(flow.toRouterPortARP(switchId,portList[i],routerPortNumber,vlanList[i]))
-#		data.append(flow.fromRouterPortARP(switchId,portList[i],routerPortNumber,vlanList[i]))
+		data.append(flow.toRouterPort(switchId,portList[i],routerPortNumber,vlanList[i],tableIdForDefault))
+		data.append(flow.fromRouterPort(switchId,portList[i],routerPortNumber,vlanList[i],tableIdForDefault))
 	headers = {'content-type': 'application/json'} 
 	url = 'http://localhost:8080/stats/flowentry/add'
 	for i in range(0,len(data)):
@@ -152,29 +164,22 @@ def offloadTopN(topN,prefixTable):
 		headers = {'content-type': 'application/json'}
 		url = 'http://localhost:8080/stats/flowentry/add'
 		for i in range(0,topN):
-			sleep(0.01)
-			data = flow.offload(switchId,prefixTable[i]['prefix'], prefixTable[i]['nexthopmac'], prefixTable[i]['port'], flowTimeout,tableId)
+			sleep(sleepAfterFlowInstall)
+			data = flow.offload(switchId,prefixTable[i]['prefix'], prefixTable[i]['nexthopmac'], prefixTable[i]['port'], flowTimeout,tableIdForOffload)
 			response = requests.post(url, data=json.dumps(data), headers=headers)
 		return str(json.dumps(prefixTable, ensure_ascii=False, sort_keys=True, indent=4))
-#			offloaded.append(prefixTable[i]['prefix'])
-#		return str(offloaded)
 
 
 def signal_handler(signal, frame):
-#		cursesExit()
 		sys.exit(0)
-
-
-
 
 
 
 def main():
 	while True:
-		while not (getId(ryuHostAddr, ryuHostPort)):
-			print ( "waiting for switch" )
-			time.sleep(2)
-		print( "switch found\n\n\n" );
+		if(not waitForSwitchOnline(ryuHostAddr, ryuHostPort)):
+			return 0
+		
 		defaultMapping(routerPort,portList,vlanList)
 		time.sleep(cooldownPeriod)
 		while not (getId(ryuHostAddr, ryuHostPort) == False):
