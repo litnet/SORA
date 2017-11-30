@@ -1,0 +1,344 @@
+Current Configuration ...
+! Version 9.11(0.0P8)
+! Last configuration change at Thu Nov 30 17:14:33 2017 by admin
+! Startup-config last updated at Thu Nov 30 17:53:05 2017 by default
+!
+boot system stack-unit 1 primary system://A
+boot system stack-unit 1 secondary system://B
+boot system stack-unit 1 default system://A
+!
+hostname Dell
+!
+protocol lldp 
+!
+redundancy auto-synchronize full
+!
+cam-acl l2acl 2 ipv4acl 2 ipv6acl 0 ipv4qos 0 l2qos 1 l2pt 0 ipmacacl 0 vman-qos 0 ecfmacl 0 openflow 8
+!
+enable secret 5 a50aabfb680401c7920fe8371bded68c
+enable password 7 b125455cf679b2086e373cd20928045bfd81eb1f4ce9dfb7
+!
+username admin sha256-password 8 6d1af29efb3e1dc4db0e8d4bcafc93c4d988baa18696c49c3f41c0264720065c017bc38ecb9c5b399257e50de7076e15 access-class 15
+!       
+bsd-username admin secret  $1$T0duaorE$Wo48k/RV2uHFVcWT8OJw6/
+!
+stack-unit 1 provision S3048-ON
+!
+interface GigabitEthernet 1/1
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/2
+ no ip address
+ portmode hybrid
+ no shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/3
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/4
+ no ip address
+ portmode hybrid
+ sflow ingress-enable
+ no shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/5
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/6
+ no ip address
+ portmode hybrid
+ sflow ingress-enable
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/7
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/8
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/9
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/10
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/11
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/12
+ no ip address
+ portmode hybrid
+ no shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/13
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/14
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/15
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/16
+ no ip address
+ portmode hybrid
+ shutdown
+ of-instance 1
+!
+interface GigabitEthernet 1/17
+ no ip address
+ portmode hybrid
+ shutdown
+!
+interface GigabitEthernet 1/18
+ no ip address
+ portmode hybrid
+ shutdown
+!
+interface GigabitEthernet 1/19
+ no ip address
+ portmode hybrid
+ shutdown
+!
+interface GigabitEthernet 1/20
+ ip address 192.168.99.2/24
+ no shutdown
+!
+interface GigabitEthernet 1/21
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/22
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/23
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/24
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/25
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/26
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/27
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/28
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/29
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/30
+ no ip address
+ shutdown
+!       
+interface GigabitEthernet 1/31
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/32
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/33
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/34
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/35
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/36
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/37
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/38
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/39
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/40
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/41
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/42
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/43
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/44
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/45
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/46
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/47
+ no ip address
+ shutdown
+!
+interface GigabitEthernet 1/48
+ no ip address
+ shutdown
+!
+interface TenGigabitEthernet 1/49
+ no ip address
+ shutdown
+!
+interface TenGigabitEthernet 1/50
+ no ip address
+ shutdown
+!
+interface TenGigabitEthernet 1/51
+ no ip address
+ shutdown
+!
+interface TenGigabitEthernet 1/52
+ no ip address
+ shutdown
+!
+interface ManagementEthernet 1/1
+ no ip address
+ shutdown
+!       
+interface ManagementEthernet 2/1
+ shutdown
+!
+interface ManagementEthernet 3/1
+ shutdown
+!
+interface ManagementEthernet 4/1
+ shutdown
+!
+interface ManagementEthernet 5/1
+ shutdown
+!
+interface ManagementEthernet 6/1
+ shutdown
+!
+interface Vlan 1
+!
+interface Vlan 4 of-instance 1
+ no ip address
+ shutdown
+!
+interface Vlan 6 of-instance 1
+ no ip address
+ shutdown
+!
+interface Vlan 7 of-instance 1
+ no ip address
+ shutdown
+!
+interface Vlan 12 of-instance 1
+ no ip address
+ shutdown
+!
+openflow of-instance 1
+ controller 1 192.168.99.1 tcp high-priority
+ flow-map l2 enable
+ flow-map l3 enable
+ flow-misses drop
+ interface-type any
+ multiple-fwd-table enable
+ of-version 1.3
+ no shutdown
+!
+ip ssh challenge-response-authentication enable
+ip ssh server enable
+ip ssh server version 2
+!
+line console 0
+line vty 0
+line vty 1
+line vty 2
+line vty 3
+line vty 4
+line vty 5
+line vty 6
+line vty 7
+line vty 8
+line vty 9
+!
+sflow collector 192.168.99.1 agent-addr 192.168.99.2
+sflow enable
+sflow polling-interval 30
+sflow sample-rate 256
+!
+reload-type
+ boot-type normal-reload
+ config-scr-download enable
+!
+end 
