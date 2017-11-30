@@ -1,12 +1,17 @@
 # SORA
 **SO**ftware **R**outer **A**ccelerator using OpenFlow capable switch hardware
 
-PROOF OF CONCEPT - Runs on hp2920 OpenFlow capable switch.
+PROOF OF CONCEPT - Proven to work on hp 2920 and Dell s3048-on OpenFlow capable switches.
+
+
+
 
 
 ***Please read the WIKI for more information***
 
 Copyright (C) 2016-2017 Norbertas Kremeris, [*LITNET*](https://www.litnet.lt/en/)
+
+
 
 
 
