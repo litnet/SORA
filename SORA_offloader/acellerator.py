@@ -81,9 +81,9 @@ def waitForSwitchOnline(ryuHostAddr, ryuHostPort):
 		counter += 1
 		print(".")
 		time.sleep(1)
-		print( "\nSwitch found!\n" );
+		print( "Switch found!" );
 		return 1
-	print( "Timed out waiting for switch, exiting...\n")
+	print( "Timed out waiting for switch, exiting...")
 	return 0;
 
 
@@ -158,6 +158,7 @@ def offloadTopN(topN,prefixTable):
 	if len(prefixTable) == 0:
 		return False
 	else:
+		print("Offloading:")
 #		print (json.dumps(prefixTable, ensure_ascii=False, sort_keys=True, indent=4))
 								#why was this here?
 		topN = len(prefixTable) #% topN
@@ -167,6 +168,8 @@ def offloadTopN(topN,prefixTable):
 			sleep(sleepAfterFlowInstall)
 			data = flow.offload(switchId,prefixTable[i]['prefix'], prefixTable[i]['nexthopmac'], prefixTable[i]['port'], flowTimeout,tableIdForOffload)
 			response = requests.post(url, data=json.dumps(data), headers=headers)
+			print("offloaded -> " + prefixTable[i]['prefix'])
+		print("Offloading complete.")
 		return str(json.dumps(prefixTable, ensure_ascii=False, sort_keys=True, indent=4))
 
 
@@ -187,10 +190,12 @@ def main():
 			prefixTable = returnPrefixTable(prefixList,portList,vlanList)
 			offloaded = offloadTopN(topPrefixCount,prefixTable)
 			defaultMapping(routerPort,portList,vlanList)
-			print (offloaded)
+			#print (offloaded)
+			print("sleeping")			
+			print("============================================")
 			time.sleep(loopSleepTime)
 			print("\n\n\n\n\n")
-			print("============================================")
+
 
 
 signal.signal(signal.SIGINT, signal_handler)
