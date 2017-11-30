@@ -188,7 +188,11 @@ def main():
 		while not (getId(ryuHostAddr, ryuHostPort) == False):
 			prefixList = returnPrefixList()
 			prefixTable = returnPrefixTable(prefixList,portList,vlanList)
+			
 			offloaded = offloadTopN(topPrefixCount,prefixTable)
+			if(not offloaded):
+				print("Nothing to offload")
+				
 			defaultMapping(routerPort,portList,vlanList)
 			#print (offloaded)
 			print("sleeping")			
