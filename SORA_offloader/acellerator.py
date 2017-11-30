@@ -5,6 +5,8 @@
 #===   PROOF OF CONCEPT
 #===   (c) Norbertas Kremeris 2017
 
+from time import sleep
+
 # includes for (1)
 import json
 import requests
@@ -20,14 +22,25 @@ import curses
 
 #custom functions
 import flow
-import switch
+from http.cookies import _LegalChars
+#import switch
+
 
 
 
 #PARAMETERS
-routerPort = 12  #multi vlan port on switch, connected to virtual router
-portList = [2, 4]    #ports used for routing
+
+#hp2920
+#routerPort = 12  #multi vlan port on switch, connected to virtual router
+#portList = [2, 4]    #ports used for routing
+#vlanList = [6, 7]    #corresponding vlans of portList[] ports
+
+#dell s3048-on
+routerPort = 64  #multi vlan port on switch, connected to virtual router
+portList = [54, 56]    #ports used for routing
 vlanList = [6, 7]    #corresponding vlans of portList[] ports
+
+
 
 sflowHostAddr = "localhost"
 sflowHostPort = "8008"
@@ -39,10 +52,27 @@ offloadValue = 0 #bytes per second
 cooldownPeriod = 1
 flowTimeout = 60
 loopSleepTime = 55
-
+tableId = 40 #default table id to use; 
 
 
 ####FUNCTIONS
+
+#===check if switch exists and is connected to ryu
+#===returns false if no switch is connected
+#===returns switch id otherwise
+
+def getId(ryuHostAddr,ryuHostPort):
+	url = "http://" + ryuHostAddr + ":" + ryuHostPort + "/stats/switches"
+	data = requests.get(url)
+	switchlist = json.loads(data.content.decode('utf-8'))
+	if switchlist == []:
+		return False
+	else:
+		return switchlist
+
+
+
+
 #=== returns table of vlans vs ports
 def returnVlanTable(portList,vlanList):
 	table = {}
@@ -97,11 +127,11 @@ def returnPrefixTable(prefixList,portList,vlanList):
 
 #===default port mapping after cold boot
 def defaultMapping(routerPortNumber,portList,vlanList):
-	switchId=switch.getId(ryuHostAddr, ryuHostPort)
+	switchId=getId(ryuHostAddr, ryuHostPort)
 	data = []
 	for i in range(0,len(portList)):
-		data.append(flow.toRouterPort(switchId,portList[i],routerPortNumber,vlanList[i]))
-		data.append(flow.fromRouterPort(switchId,portList[i],routerPortNumber,vlanList[i]))
+		data.append(flow.toRouterPort(switchId,portList[i],routerPortNumber,vlanList[i],tableId))
+		data.append(flow.fromRouterPort(switchId,portList[i],routerPortNumber,vlanList[i],tableId))
 #		data.append(flow.toRouterPortARP(switchId,portList[i],routerPortNumber,vlanList[i]))
 #		data.append(flow.fromRouterPortARP(switchId,portList[i],routerPortNumber,vlanList[i]))
 	headers = {'content-type': 'application/json'} 
@@ -112,16 +142,18 @@ def defaultMapping(routerPortNumber,portList,vlanList):
 #=== offloads topN prefixes ;)
 def offloadTopN(topN,prefixTable):
 	offloaded = []
-	switchId = switch.getId(ryuHostAddr, ryuHostPort)
+	switchId = getId(ryuHostAddr, ryuHostPort)
 	if len(prefixTable) == 0:
 		return False
 	else:
 #		print (json.dumps(prefixTable, ensure_ascii=False, sort_keys=True, indent=4))
-		topN = len(prefixTable) % topN
+								#why was this here?
+		topN = len(prefixTable) #% topN
 		headers = {'content-type': 'application/json'}
 		url = 'http://localhost:8080/stats/flowentry/add'
 		for i in range(0,topN):
-			data = flow.offload(switchId,prefixTable[i]['prefix'], prefixTable[i]['nexthopmac'], prefixTable[i]['port'], flowTimeout)
+			sleep(0.01)
+			data = flow.offload(switchId,prefixTable[i]['prefix'], prefixTable[i]['nexthopmac'], prefixTable[i]['port'], flowTimeout,tableId)
 			response = requests.post(url, data=json.dumps(data), headers=headers)
 		return str(json.dumps(prefixTable, ensure_ascii=False, sort_keys=True, indent=4))
 #			offloaded.append(prefixTable[i]['prefix'])
@@ -139,13 +171,13 @@ def signal_handler(signal, frame):
 
 def main():
 	while True:
-		while not (switch.getId(ryuHostAddr, ryuHostPort)):
+		while not (getId(ryuHostAddr, ryuHostPort)):
 			print ( "waiting for switch" )
 			time.sleep(2)
 		print( "switch found\n\n\n" );
 		defaultMapping(routerPort,portList,vlanList)
 		time.sleep(cooldownPeriod)
-		while not (switch.getId(ryuHostAddr, ryuHostPort) == False):
+		while not (getId(ryuHostAddr, ryuHostPort) == False):
 			prefixList = returnPrefixList()
 			prefixTable = returnPrefixTable(prefixList,portList,vlanList)
 			offloaded = offloadTopN(topPrefixCount,prefixTable)
